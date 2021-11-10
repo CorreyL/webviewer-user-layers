@@ -16,9 +16,9 @@ const App = () => {
       },
       viewer.current,
     ).then((instance) => {
-      const { docViewer } = instance;
+      const { documentViewer } = instance.Core;
 
-      docViewer.on('documentLoaded', () => {
+      documentViewer.addEventListener('documentLoaded', () => {
         setWvInstance(instance);
       });
     });

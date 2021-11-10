@@ -30,6 +30,7 @@ const App = () => {
     if (!wvInstance) {
       return;
     }
+    wvInstance.Core.annotationManager.setCurrentUser(currentRole);
     wvInstance.Core.annotationManager.removeEventListener('annotationChanged');
     wvInstance.Core.annotationManager.addEventListener('annotationChanged', (annotations, action, { imported }) => {
       if (imported) {

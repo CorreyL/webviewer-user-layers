@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react';
 import './LayerOptions.css';
 
 const LayerOptions = (props) => {
+  const allRoles = 'allRoles';
   const {
+    setAnnotationsToSee,
     setCurrentRole,
   } = props;
 
@@ -15,6 +17,7 @@ const LayerOptions = (props) => {
 
   useEffect(() => {
     setCurrentRole(userRoles[0]);
+    setAnnotationsToSee(allRoles);
   }, []);
 
   return (
@@ -38,6 +41,23 @@ const LayerOptions = (props) => {
           ))
         }
       </select>
+      <h2>See Annotations For</h2>
+      <div
+        onChange={(event => {
+          setAnnotationsToSee(event.target.value);
+        })}
+      >
+        <input type="radio" id="allRoles" name="seeAnnotations" value={allRoles} defaultChecked/>
+        <label htmlFor="allRoles">All Roles</label>
+        {
+          userRoles.map(role => (
+            <div key={`see-annotations-for-${role}`}>
+              <input type="radio" id={role} name="seeAnnotations" value={role}/>
+              <label htmlFor={role}>{role}</label>
+            </div>
+          ))
+        }
+      </div>
     </div>
   );
 };

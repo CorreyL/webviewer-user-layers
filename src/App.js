@@ -7,6 +7,7 @@ const App = () => {
   const viewer = useRef(null);
 
   const [ wvInstance, setWvInstance ] = useState(null);
+  const [ currentRole, setCurrentRole ] = useState(null);
 
   useEffect(() => {
     WebViewer(
@@ -24,10 +25,26 @@ const App = () => {
     });
   }, [ setWvInstance ]);
 
+  useEffect(() => {
+    if (!wvInstance) {
+      return;
+    }
+    wvInstance.Core.annotationManager.removeEventListener('annotationChanged');
+    wvInstance.Core.annotationManager.addEventListener('annotationChanged', (annotations, action) => {
+      if (action === 'add') {
+        annotations.forEach(annot => {
+          console.log('role', currentRole);
+          annot.setCustomData('role', currentRole);
+        });
+      }
+    });
+  }, [ wvInstance, currentRole ]);
 
   return (
     <div className="App">
-      <LayerOptions/>
+      <LayerOptions
+        setCurrentRole={setCurrentRole}
+      />
       <div className="webviewer" ref={viewer}></div>
     </div>
   );

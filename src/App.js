@@ -37,7 +37,6 @@ const App = () => {
       }
       if (action === 'add') {
         annotations.forEach(annot => {
-          console.log('role', currentRole);
           annot.setCustomData('role', currentRole);
         });
       }

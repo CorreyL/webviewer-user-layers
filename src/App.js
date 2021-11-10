@@ -31,7 +31,10 @@ const App = () => {
       return;
     }
     wvInstance.Core.annotationManager.removeEventListener('annotationChanged');
-    wvInstance.Core.annotationManager.addEventListener('annotationChanged', (annotations, action) => {
+    wvInstance.Core.annotationManager.addEventListener('annotationChanged', (annotations, action, { imported }) => {
+      if (imported) {
+        return;
+      }
       if (action === 'add') {
         annotations.forEach(annot => {
           console.log('role', currentRole);

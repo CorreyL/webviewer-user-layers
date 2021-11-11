@@ -6,6 +6,7 @@ import './App.css';
 const App = () => {
   const viewer = useRef(null);
 
+  const [ annotationsLoaded, setAnnotationsLoaded ] = useState(false);
   const [ wvInstance, setWvInstance ] = useState(null);
   const [ currentRole, setCurrentRole ] = useState(null);
   const [ annotationsToSee, setAnnotationsToSee ] = useState([]);
@@ -23,8 +24,22 @@ const App = () => {
       documentViewer.addEventListener('documentLoaded', () => {
         setWvInstance(instance);
       });
+
+      documentViewer.addEventListener('annotationsLoaded', () => {
+        setAnnotationsLoaded(true);
+      });
     });
   }, [ setWvInstance ]);
+
+  useEffect(() => {
+    if (wvInstance && annotationsLoaded) {
+      wvInstance.Core.annotationManager.showAnnotations(
+        wvInstance.Core.annotationManager
+          .getAnnotationsList()
+          .filter(annot => annotationsToSee.includes(annot.getCustomData('role')))
+      );
+    }
+  }, [ wvInstance, annotationsLoaded ]);
 
   useEffect(() => {
     if (!wvInstance) {
@@ -49,8 +64,7 @@ const App = () => {
       return;
     }
     const { annotationManager } = wvInstance.Core;
-    if (annotationsToSee === 'allRoles') {
-      annotationManager.showAnnotations(annotationManager.getAnnotationsList());
+    if (!annotationsLoaded) {
       return;
     }
     annotationManager.hideAnnotations(annotationManager.getAnnotationsList());

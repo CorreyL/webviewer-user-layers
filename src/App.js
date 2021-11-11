@@ -78,6 +78,7 @@ const App = () => {
   return (
     <div className="App">
       <LayerOptions
+        annotationsLoaded={annotationsLoaded}
         annotationsToSee={annotationsToSee}
         setCurrentRole={setCurrentRole}
         setAnnotationsToSee={setAnnotationsToSee}

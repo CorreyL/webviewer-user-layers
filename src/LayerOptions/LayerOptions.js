@@ -4,6 +4,7 @@ import './LayerOptions.css';
 
 const LayerOptions = (props) => {
   const {
+    annotationsLoaded,
     annotationsToSee,
     setAnnotationsToSee,
     setCurrentRole,
@@ -50,6 +51,7 @@ const LayerOptions = (props) => {
                 type="checkbox"
                 id={role}
                 name="seeAnnotations"
+                disabled={!annotationsLoaded}
                 value={role}
                 checked={annotationsToSee.length && annotationsToSee.includes(role)}
                 onChange={(event) => {

@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import './LayerOptions.css';
 
 const LayerOptions = (props) => {
-  const allRoles = 'allRoles';
   const {
+    annotationsToSee,
     setAnnotationsToSee,
     setCurrentRole,
   } = props;
@@ -17,7 +17,7 @@ const LayerOptions = (props) => {
 
   useEffect(() => {
     setCurrentRole(userRoles[0]);
-    setAnnotationsToSee(allRoles);
+    setAnnotationsToSee(userRoles);
   }, []);
 
   return (
@@ -42,17 +42,26 @@ const LayerOptions = (props) => {
         }
       </select>
       <h2>See Annotations For</h2>
-      <div
-        onChange={(event => {
-          setAnnotationsToSee(event.target.value);
-        })}
-      >
-        <input type="radio" id="allRoles" name="seeAnnotations" value={allRoles} defaultChecked/>
-        <label htmlFor="allRoles">All Roles</label>
+      <div>
         {
           userRoles.map(role => (
             <div key={`see-annotations-for-${role}`}>
-              <input type="radio" id={role} name="seeAnnotations" value={role}/>
+              <input
+                type="checkbox"
+                id={role}
+                name="seeAnnotations"
+                value={role}
+                checked={annotationsToSee.length && annotationsToSee.includes(role)}
+                onClick={(event) => {
+                  event.persist();
+                  const { checked, value } = event.target;
+                  if (checked) {
+                    setAnnotationsToSee((annotationsToSee) => [...annotationsToSee, value]);
+                  } else {
+                    setAnnotationsToSee((annotationsToSee) => annotationsToSee.filter(role => role !== value));
+                  }
+                }}
+              />
               <label htmlFor={role}>{role}</label>
             </div>
           ))

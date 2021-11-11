@@ -8,7 +8,7 @@ const App = () => {
 
   const [ wvInstance, setWvInstance ] = useState(null);
   const [ currentRole, setCurrentRole ] = useState(null);
-  const [ annotationsToSee, setAnnotationsToSee ] = useState(null);
+  const [ annotationsToSee, setAnnotationsToSee ] = useState([]);
 
   useEffect(() => {
     WebViewer(
@@ -54,12 +54,17 @@ const App = () => {
       return;
     }
     annotationManager.hideAnnotations(annotationManager.getAnnotationsList());
-    annotationManager.showAnnotations(annotationManager.getAnnotationsList().filter(annot => annot.getCustomData('role') === annotationsToSee));
+    annotationManager.showAnnotations(
+      annotationManager
+        .getAnnotationsList()
+        .filter(annot => annotationsToSee.includes(annot.getCustomData('role')))
+    );
   }, [ wvInstance, annotationsToSee ])
 
   return (
     <div className="App">
       <LayerOptions
+        annotationsToSee={annotationsToSee}
         setCurrentRole={setCurrentRole}
         setAnnotationsToSee={setAnnotationsToSee}
       />

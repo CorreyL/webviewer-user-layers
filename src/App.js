@@ -55,6 +55,7 @@ const App = () => {
         annotations.forEach(annot => {
           annot.setCustomData('role', currentRole);
         });
+        wvInstance.Core.annotationManager.showAnnotations(annotations);
       }
     });
   }, [ wvInstance, currentRole ]);

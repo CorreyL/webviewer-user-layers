@@ -52,7 +52,7 @@ const LayerOptions = (props) => {
                 name="seeAnnotations"
                 value={role}
                 checked={annotationsToSee.length && annotationsToSee.includes(role)}
-                onClick={(event) => {
+                onChange={(event) => {
                   event.persist();
                   const { checked, value } = event.target;
                   if (checked) {

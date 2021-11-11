@@ -81,7 +81,27 @@ const App = () => {
       annotList: (
         wvInstance.Core.annotationManager
           .getAnnotationsList()
-          .filter(annot => annotationsToSee.includes(annot.getCustomData('role')))
+          .filter(annot => {
+            const stickyNoteReplies = annot.getReplies().filter(annot => annot instanceof wvInstance.Core.Annotations.StickyAnnotation);
+            return (
+              annotationsToSee.includes(annot.getCustomData('role'))
+              && (
+                // Check that the annotation does not have a status of cancelled
+                !stickyNoteReplies.length
+                || stickyNoteReplies[stickyNoteReplies.length - 1].getState() !== 'Cancelled'
+              )
+              && (
+                !(annot instanceof wvInstance.Core.Annotations.StickyAnnotation)
+                // For any Sticky Note replies, make sure its parent is not hidden
+                // and that the sticky note itself is not cancelled
+                || (
+                  annot.InReplyTo
+                  && !wvInstance.Core.annotationManager.getAnnotationById(annot.InReplyTo).Hidden
+                  && annot.getState() !== 'Cancelled'
+                )
+              )
+            )
+          })
       )
     });
     wvInstance.UI.downloadPdf({

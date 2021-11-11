@@ -6,6 +6,7 @@ const LayerOptions = (props) => {
   const {
     annotationsLoaded,
     annotationsToSee,
+    consolidateAnnotations,
     setAnnotationsToSee,
     setCurrentRole,
   } = props;
@@ -69,6 +70,11 @@ const LayerOptions = (props) => {
           ))
         }
       </div>
+      <button
+        onClick={consolidateAnnotations}
+      >
+        Consolidate All Unhidden Annotations
+      </button>
     </div>
   );
 };

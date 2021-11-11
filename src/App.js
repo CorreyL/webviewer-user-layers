@@ -75,11 +75,25 @@ const App = () => {
     );
   }, [ wvInstance, annotationsToSee ])
 
+  const consolidateAnnotations = async () => {
+    const xfdfString = await wvInstance.Core.annotationManager.exportAnnotations({
+      annotList: (
+        wvInstance.Core.annotationManager
+          .getAnnotationsList()
+          .filter(annot => annotationsToSee.includes(annot.getCustomData('role')))
+      )
+    });
+    wvInstance.UI.downloadPdf({
+      xfdfString,
+    });
+  }
+
   return (
     <div className="App">
       <LayerOptions
         annotationsLoaded={annotationsLoaded}
         annotationsToSee={annotationsToSee}
+        consolidateAnnotations={consolidateAnnotations}
         setCurrentRole={setCurrentRole}
         setAnnotationsToSee={setAnnotationsToSee}
       />

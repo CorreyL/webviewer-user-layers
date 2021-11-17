@@ -7,6 +7,7 @@ const LayerOptions = (props) => {
     annotationsLoaded,
     annotationsToSee,
     consolidateAnnotations,
+    currentRole,
     setAnnotationsToSee,
     setCurrentRole,
   } = props;
@@ -73,6 +74,7 @@ const LayerOptions = (props) => {
       </div>
       <button
         onClick={consolidateAnnotations}
+        disabled={currentRole !== 'Responsible'}
       >
         Consolidate All Unhidden Annotations
       </button>

@@ -150,6 +150,7 @@ const App = () => {
         annotationsLoaded={annotationsLoaded}
         annotationsToSee={annotationsToSee}
         consolidateAnnotations={consolidateAnnotations}
+        currentRole={currentRole}
         setCurrentRole={setCurrentRole}
         setAnnotationsToSee={setAnnotationsToSee}
       />

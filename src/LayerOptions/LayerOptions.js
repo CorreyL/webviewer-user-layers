@@ -12,6 +12,7 @@ const LayerOptions = (props) => {
   } = props;
 
   const userRoles = [
+    'Responsible',
     'Mechanical',
     'Civil',
     'Electrical'

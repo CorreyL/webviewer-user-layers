@@ -28,6 +28,40 @@ const App = () => {
       documentViewer.addEventListener('annotationsLoaded', () => {
         setAnnotationsLoaded(true);
       });
+
+      instance.UI.annotationPopup.add({
+        dataElement: 'copy-for-ownership',
+        type: 'actionButton',
+        title: 'Copy For Ownership',
+        img: 'ic_copy_black_24px',
+        onClick: () => {
+          const annotations = instance.Core.annotationManager.getSelectedAnnotations();
+          const deepCopyAnnotations = annotations.map(annot => {
+            const copiedAnnot = instance.Core.annotationManager.getAnnotationCopy(annot, {
+              copyAssociatedLink: true
+            });
+            const replies = annot.getReplies();
+            const newRect = copiedAnnot.getRect();
+            newRect.translate(5, 5);
+            copiedAnnot.setRect(newRect);
+            replies.forEach(reply => {
+              instance.Core.annotationManager.createAnnotationReply(copiedAnnot, reply.getContents());
+            });
+            return copiedAnnot;
+          });
+          instance.Core.annotationManager.addAnnotations(deepCopyAnnotations);
+          instance.Core.annotationManager.selectAnnotations(deepCopyAnnotations);
+        },
+      });
+
+      instance.Core.annotationManager.addEventListener('annotationSelected', (annotations) => {
+        const currentUser = instance.Core.annotationManager.getCurrentUser();
+        if (currentUser === 'Responsible' && annotations.some(annot => annot.Author !== 'Responsible')) {
+          instance.UI.enableElements(['copy-for-ownership']);
+        } else {
+          instance.UI.disableElements(['copy-for-ownership']);
+        }
+      });
     });
   }, [ setWvInstance ]);
 

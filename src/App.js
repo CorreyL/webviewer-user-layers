@@ -45,7 +45,8 @@ const App = () => {
             newRect.translate(5, 5);
             copiedAnnot.setRect(newRect);
             replies.forEach(reply => {
-              instance.Core.annotationManager.createAnnotationReply(copiedAnnot, reply.getContents());
+              const newReply = instance.Core.annotationManager.createAnnotationReply(copiedAnnot, reply.getContents());
+              newReply.Author = reply.Author;
             });
             return copiedAnnot;
           });

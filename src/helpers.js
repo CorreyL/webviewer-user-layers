@@ -77,8 +77,6 @@ const Helpers = {
   },
   setDocumentViewer: (dv) => {
     documentViewer = dv;
-    console.log(dv);
-    console.log(documentViewer);
   },
   /**
    * Converts a base64 string to the equivalent instance of a Blob

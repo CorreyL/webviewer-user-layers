@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
 import LayerOptions from './LayerOptions/LayerOptions';
 import './App.css';
+import Helpers from './helpers';
+import html2canvas from 'html2canvas';
 
 const App = () => {
   const viewer = useRef(null);
@@ -19,7 +21,7 @@ const App = () => {
       },
       viewer.current,
     ).then((instance) => {
-      const { documentViewer } = instance.Core;
+      const { documentViewer, annotationManager } = instance.Core;
 
       documentViewer.addEventListener('documentLoaded', () => {
         setWvInstance(instance);
@@ -28,6 +30,48 @@ const App = () => {
       documentViewer.addEventListener('annotationsLoaded', () => {
         setAnnotationsLoaded(true);
       });
+
+      documentViewer.addEventListener('annotationsLoaded', async () => {
+        Helpers.setAnnotationManager(annotationManager);
+        Helpers.setDocumentViewer(documentViewer);
+        const printableAnnotationNotes = annotationManager.getAnnotationsList()
+          .filter(
+            annotation =>
+              annotation.Listable &&
+              // annotation.PageNumber === pageNumber &&
+              !annotation.isReply() &&
+              !annotation.isGrouped() &&
+              annotation.Printable,
+          );
+        const sortedNotes = printableAnnotationNotes.sort(Helpers.sortNotes);
+        const container = document.createElement('div');
+        container.className = 'page__container';
+
+        const header = document.createElement('div');
+        header.className = 'page__header';
+
+        /**
+         * @todo Re-implement the header for each page
+         */
+        // container.appendChild(header);
+        sortedNotes.forEach(annotation => {
+          header.innerHTML = `Page ${annotation.PageNumber}`;
+          const note = Helpers.getNote(annotation);
+
+          container.appendChild(note);
+        });
+        document.body.appendChild(container);
+        const canvasToUse = await html2canvas(container);
+        container.remove();
+        const data = canvasToUse.toDataURL("image/jpeg", 1.0);
+        const documentToMerge = await instance.Core.createDocument(
+          Helpers.base64ToBlob(data.split(',')[1]),
+          { extension: 'jpg' }
+        );
+        const doc = documentViewer.getDocument();
+        const pageIndexToInsert = doc.getPageCount() + 1;
+        doc.insertPages(documentToMerge, [1], pageIndexToInsert);
+      }, { once: true });
 
       instance.UI.annotationPopup.add({
         dataElement: 'copy-for-ownership',
